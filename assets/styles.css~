@@ -1,0 +1,45 @@
+.file-type {
+	background: url("images/folder.png") 0 50% no-repeat;
+	padding-left: 20px;
+}
+
+a.code {
+	background-image: url("images/code.png");
+}
+
+a.doc {
+	background-image: url("images/doc.png");
+}
+
+a.file {
+	background-image: url("images/file.png");
+}
+
+a.image {
+	background-image: url("images/image.png");
+}
+
+a.video {
+	background-image: url("images/video.png");
+}
+
+.create-menu {
+	float: right;
+	margin: -1.15em 19px 0 0;
+	list-style: none;
+	position: relative;
+	font:127.28% Lucida Grande,Leelawadee,Tahoma,Verdana,sans-serif;
+}
+
+	p.create-menu {
+		font-size: 1em;
+		color: #aaa;
+	}
+
+.create-menu li {
+	display: inline;
+}
+
+.create-menu li a {
+	margin: 0 .25em;
+}
