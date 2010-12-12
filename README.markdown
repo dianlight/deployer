@@ -1,7 +1,7 @@
 # Deployer #
 
 ** ATTENTION ** 
-This is a early alpha version and is not tested in all condition and environment. 
+This is a early alpha version and is not tested in all condition and environments. 
 Use with CAUTION only as Technology Preview not on production environment. 
 ** ATTENTION ** 
 
@@ -17,7 +17,7 @@ The other environment is the production where a snopshot of the stage enviroment
 - GitHub Repository: <http://github.com/dianlight/deployer>
 
 
-# Background #
+## Background
 
 In my company we need to manage continus develop of website in production but on a single SymphonyCMS installation is very difficult.
 A signle developer or author (in my company are copywriters and marketing peoples without technical expertice ) can insert bug or error ant drop the site avability.
@@ -58,4 +58,4 @@ Information about [installing and updating extensions](http://symphony-cms.com/l
 - Add MD5 CRC and ZIP test on Ensamble to prevent "Invalid ZIP" error on deploy.
 - Add User Comments on SnapShoots
 - Add Site Recovery on a failed Deploy.
-- Add aumatic maintenance_mode on deploy if needed (Hard Deply?)
+- Add aumatic maintenance_mode on deploy if needed (Hard Deploy?)
