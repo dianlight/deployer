@@ -200,7 +200,8 @@
 				$download_uri = $Deployer->baseURL() . 'properties/?file=' . urlencode($relpath) . '/';
 			}
 			if(!$file->isDot()){
-				$td1 = Widget::TableData(Widget::Anchor($file->getFilename(), $Deployer->baseURL() . ($file->isDir() ? 'browse' . $relpath . '/' : 'properties/?file=' . urlencode($relpath)), NULL, 'file-type ' . ($file->isDir() ? 'folder' : File::fileType($file->getFilename()))));
+//				$td1 = Widget::TableData(Widget::Anchor($file->getFilename(), $Deployer->baseURL() . ($file->isDir() ? 'browse' . $relpath . '/' : 'properties/?file=' . urlencode($relpath)), NULL, 'file-type ' . ($file->isDir() ? 'folder' : File::fileType($file->getFilename()))));
+				$td1 = Widget::TableData($file->getFilename());
 	
 //				$group = $file->getGroup();
 //				$owner = $file->getOwner();
