@@ -21,8 +21,8 @@ The other environment is the production where a snopshot of the stage enviroment
 
 In my company we need to manage continus develop of website in production but on a single SymphonyCMS installation is very difficult.
 A signle developer or author (in my company are copywriters and marketing peoples without technical expertice ) can insert bug or error ant drop the site avability.
-So I create a two enviroment architecture, one for staging and develop and one for production. When a new version of a site is ready and teste in stage environment I create the Ensemble (whith "Export Ensamble" extension) and move all to the production environment. 
-This extensions try to autmate this procedure.
+So I create a two enviroment architecture, one for staging and develop and one for production. When a new version of a site is ready and tested in stage environment I create the Ensemble (whith "Export Ensamble" extension) and move all to the production environment. 
+This extensions is a try to autmate the procedure.
 
 This is my first extension for Symphony and I'm not expert in PHP (I'm a Java developer) so I borrow function and code from the original Export Ensamble and FileManager extensions.
 
@@ -38,7 +38,7 @@ Currently this extension adds a  "System->Deployer" menu and some configuration 
 
 The Deploy procedure is a simple unzip of the Ensamble in the target directory and the execution of the two .sql scripts on the target DB. 
 This deploy method is what I call "Hard Deploy" beacuse all tables on the target DB are dropped and recreate.
-In the future it will insert waht I call "Soft Deploy" to allow a sort of DB sync between the Ensamble and the running DB so downtime is perfromed on the running website.
+In the future it will insert waht I call "Soft Deploy" to allow a sort of DB sync between the Ensamble and the running DB so no downtime is perfromed on the running website.
 
 
 ## Installation & Updating
@@ -59,3 +59,4 @@ Information about [installing and updating extensions](http://symphony-cms.com/l
 - Add User Comments on SnapShoots
 - Add Site Recovery on a failed Deploy.
 - Add aumatic maintenance_mode on deploy if needed (Hard Deploy?)
+- UI Improvement ( Progress Bars?)
