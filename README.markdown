@@ -60,3 +60,4 @@ Information about [installing and updating extensions](http://symphony-cms.com/l
 - Add Site Recovery on a failed Deploy.
 - Add aumatic maintenance_mode on deploy if needed (Hard Deploy?)
 - UI Improvement ( Progress Bars?)
+- Write a Manual
