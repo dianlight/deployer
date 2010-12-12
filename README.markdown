@@ -14,7 +14,7 @@ The other environment is the production where a snopshot of the stage enviroment
 - Requirements: Symphony 2.1.0 or above, ZIP enabled (--enable-zip)
 - Author: Lucio Tarantino, lucio.tarantino@gmail.com
 - Constributors: [A list of contributors can be found in the commit history]
-- GitHub Repository: <http://github.com/pointybeard/export_ensemble>
+- GitHub Repository: <http://github.com/dianlight/deployer>
 
 
 # Background #
