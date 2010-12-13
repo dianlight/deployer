@@ -155,20 +155,28 @@
 			if(!file_exists($Deployer->getDeployUrl().'/META-INF/deploy.php')){
 				$dpy_fileName='-';
 				$dpy_deployDate='-';
+				$dpy_ensambleDate='-';
 			} else {
 				require_once($Deployer->getDeployUrl().'/META-INF/deploy.php');
 			}
 			
 			$prodstatus->appendChild(new XMLElement('p','Status:',array('class' => 'status-label')));
 			$prodstatus->appendChild(new XMLElement('p',$dpy_status,array('class' => 'status-text')));
-
+			$prodstatus->appendChild(new XMLElement('br'));
+				
 			$prodstatus->appendChild(new XMLElement('p','Deployed Zip:',array('class' => 'status-label')));
 			$prodstatus->appendChild(new XMLElement('p',$dpy_fileName,array('class' => 'status-text')));
+			$prodstatus->appendChild(new XMLElement('br'));
+
+			$prodstatus->appendChild(new XMLElement('p','Ensamble Date:',array('class' => 'status-label')));
+			$prodstatus->appendChild(new XMLElement('p',$dpy_ensambleDate,array('class' => 'status-text')));
+			$prodstatus->appendChild(new XMLElement('br'));
 
 			$prodstatus->appendChild(new XMLElement('p','Deployed Date:',array('class' => 'status-label')));
 			$prodstatus->appendChild(new XMLElement('p',$dpy_deployDate,array('class' => 'status-text')));
-
 			$prodstatus->appendChild(Widget::Anchor('(show log)', '/deploy-log.txt', 'Display Log of deploy', 'status-text'));
+			$prodstatus->appendChild(new XMLElement('br'));
+			
 			
 			$div->appendChild($prodstatus);
 			$this->Form->appendChild($div);                           

@@ -161,7 +161,8 @@
 			if(isset($div))$ul->appendChild(new XMLElement('il', 'ZIP: colleting files'));
 			$archive = new ZipArchive;
 //			$res = $archive->open(TMP . '/ensemble.tmp.zip', ZipArchive::CREATE);
-			$res = $archive->open(self::getStorageUrl() . '/ensemble.'.gmdate('Ymd.His').'.zip', ZipArchive::CREATE);
+			$fileName = 'ensemble.'.gmdate('Ymd.His').'.zip';
+			$res = $archive->open(self::getStorageUrl() . '/'.$fileName, ZipArchive::CREATE);
 
 			if ($res === TRUE) {
 				
@@ -189,11 +190,11 @@
 				if(is_file(DOCROOT . '/README')) $archive->addFile(DOCROOT . '/README', 'README');
 				if(is_file(DOCROOT . '/LICENCE')) $archive->addFile(DOCROOT . '/LICENCE', 'LICENCE');
 				if(is_file(DOCROOT . '/update.php')) $archive->addFile(DOCROOT . '/update.php', 'update.php');
-				if(is_file(DOCROOT . '/.htaccess')) $archive->addFile(DOCROOT . '/.htaccess', '.htaccess');
+				if(is_file(DOCROOT . '/.htaccess')) $archive->addFile(DOCROOT . '/.htaccess', 'META-INF/.htaccess');
 
 			
 				// Adding deploy.php
-				$deploy_template="<?php \n\$dpy_fileName='ensemble.".gmdate('Ymd.His').".zip'; \n\$dpy_deployDate='".gmdate('d M Y H:i:s')."';\n?>";
+				$deploy_template="<?php \n\$dpy_fileName='".$fileName."'; \n\$dpy_ensambleDate='".gmdate('d M Y H:i:s')."';\n\$dpy_deployDate='%%DEPLOY_DATE%%';\n?>";
 				$archive->addFromString('META-INF/deploy.php', $deploy_template);
 			}
 			
@@ -425,8 +426,22 @@
 						 }
 					}        
 					fclose($handle);
-					$deploy_log->writeToLog("INFO: Importing workspace data..END", true);					
-				}								
+					$deploy_log->writeToLog("INFO: Importing workspace data..END", true);
+					// Move .htaccess
+					$deploy_log->writeToLog("INFO: Moving .htaccess to root. Result (1=OK): ".
+						rename($this->getDeployUrl()."/META-INF/.htaccess",$this->getDeployUrl()."/.htaccess"), true);
+					
+				}
+				// Mark Deploy Date
+				$deploy_log->writeToLog("INFO: Mark deploy date", true);
+				$handle = fopen($this->getDeployUrl()."/META-INF/deploy.php", "rb");
+				$content = fread($handle,filesize($this->getDeployUrl()."/META-INF/deploy.php"));
+				fclose($handle);
+				$handle = fopen($this->getDeployUrl()."/META-INF/deploy.php", "wb");
+				$content = str_replace("%%DEPLOY_DATE%%", gmdate('d M Y H:i:s'), $content);
+				$numbytes = fwrite($handle, $content);
+				fclose($handle);
+				
 			} else {
 				$this->_Parent->customError(E_USER_ERROR, 'Deploy Failed', 'The file you requested, <code>'.$file.'</code>, can\'t be extract to deploy location.', false, true, 'error', array('header' => 'HTTP/1.0 404 Not Found'));
 			}

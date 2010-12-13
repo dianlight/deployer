@@ -48,6 +48,12 @@ Information about [installing and updating extensions](http://symphony-cms.com/l
 
 ## Change Log
 
+**Version 0.2**(Alpha2)
+
+- BUG #1: "Deployed Date" is the date of ensemble not the date of the deploy.
+- .htaccess is moved in root only on configured ensemble. (BUG #2: Add check to remove .htaccess on first installation)
+
+
 **Version 0.1**(Alpha)
 
 - Initial version.
@@ -60,4 +66,7 @@ Information about [installing and updating extensions](http://symphony-cms.com/l
 - Add Site Recovery on a failed Deploy.
 - Add aumatic maintenance_mode on deploy if needed (Hard Deploy?)
 - UI Improvement ( Progress Bars?)
+- Add option to include/exclude .htaccess on deploy.
+- Add option to include authors.
+- Add option to create a new Admin on deploy.
 - Write a Manual
