@@ -9,8 +9,8 @@ This externsion allow to manage two environment at time.
 One environment is the stage and is a "standard" Symphony.CMS installation where authors can develop the website.
 The other environment is the production where a snopshot of the stage enviroment live without in a "readonly" mode.
 
-- Version: 0.01
-- Date: 12th Dec 2010
+- Version: 0.02
+- Date: 13th Dec 2010
 - Requirements: Symphony 2.1.0 or above, ZIP enabled (--enable-zip)
 - Author: Lucio Tarantino, lucio.tarantino@gmail.com
 - Constributors: [A list of contributors can be found in the commit history]
@@ -48,13 +48,13 @@ Information about [installing and updating extensions](http://symphony-cms.com/l
 
 ## Change Log
 
-**Version 0.2**(Alpha2)
+**Version 0.2** ( 13th Dec 2010 Alpha2)
 
 - BUG #1: "Deployed Date" is the date of ensemble not the date of the deploy.
 - .htaccess is moved in root only on configured ensemble. (BUG #2: Add check to remove .htaccess on first installation)
 
 
-**Version 0.1**(Alpha)
+**Version 0.1** ( 12th Dec 2010 Alpha) 
 
 - Initial version.
 
