@@ -144,12 +144,14 @@
 */
 			switch($type){
 				case 'snapshot':
+/*
 					$this->appendSubheading('Creating Snapshot in '.$Deployer->getStorageUrl());
 					$div = new XMLElement('div');
 					$div->setAttribute('class', 'group');
 					$this->Form->appendChild($div);
-					$Deployer->export($div);
-					
+*/					
+					$Deployer->export();
+/*					
 					$this->appendSubheading('Snapshot created');
 					$div = new XMLElement('div');
 					$div->setAttribute('class', 'actions');
@@ -167,6 +169,8 @@
 		
 					
 					$this->Form->appendChild($div);			
+*/
+					redirect(extension_deployer::baseURL() . 'deployer/');
 					break;
 				default:
 					$this->appendSubheading('Action error in '.$Deployer->getStorageUrl());

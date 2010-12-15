@@ -10,8 +10,13 @@
 			
 			$file = $_REQUEST['file'];
 			
-			$Deployer->deploy($file);
+			if(Administration::instance()->Configuration->get('auto-maintence', 'deployer') == 'yes')$oldMaintenceStatus = $Deployer->productionMaintence(true);
 			
+			$Deployer->deploy($file);
+
+			if(Administration::instance()->Configuration->get('auto-maintence', 'deployer') == 'yes')$Deployer->productionMaintence($oldMaintenceStatus);
+			
+			redirect(extension_deployer::baseURL() . 'deployer/');
 			exit();
 		}
 

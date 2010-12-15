@@ -159,6 +159,15 @@
 			} else {
 				require_once($Deployer->getDeployUrl().'/META-INF/deploy.php');
 			}
+
+			$create_menu = new XMLElement('ul');
+			$create_menu->setAttribute('class', 'create-menu');		
+			$li = new XMLElement('li');
+			if($settings['maintenance_mode']['enabled'] == 'no')$li->appendChild(Widget::Anchor('Turn productionin Maintence Mode', extension_deployer::baseURL() . 'command?cmd=goOffline', 'Turn productionin Maintence Mode', 'button'));
+			else if($settings['maintenance_mode']['enabled'] == 'yes')$li->appendChild(Widget::Anchor('Remove Maintence Mode', extension_deployer::baseURL() . 'command?cmd=goOnline' , 'Remove Maintence Mode', 'button'));
+			$create_menu->appendChild($li);
+			$this->Form->appendChild($create_menu);	
+
 			
 			$prodstatus->appendChild(new XMLElement('p','Status:',array('class' => 'status-label')));
 			$prodstatus->appendChild(new XMLElement('p',$dpy_status,array('class' => 'status-text')));
@@ -172,6 +181,10 @@
 			$prodstatus->appendChild(new XMLElement('p',$dpy_ensambleDate,array('class' => 'status-text')));
 			$prodstatus->appendChild(new XMLElement('br'));
 
+			$prodstatus->appendChild(new XMLElement('p','Deploy Mode:',array('class' => 'status-label')));
+			$prodstatus->appendChild(new XMLElement('p',$dpy_deployMode,array('class' => 'status-text')));
+			$prodstatus->appendChild(new XMLElement('br'));
+			
 			$prodstatus->appendChild(new XMLElement('p','Deployed Date:',array('class' => 'status-label')));
 			$prodstatus->appendChild(new XMLElement('p',$dpy_deployDate,array('class' => 'status-text')));
 			$prodstatus->appendChild(Widget::Anchor('(show log)', '/deploy-log.txt', 'Display Log of deploy', 'status-text'));
@@ -180,14 +193,8 @@
 			
 			$div->appendChild($prodstatus);
 			$this->Form->appendChild($div);                           
-/*
-			$create_menu = new XMLElement('ul');
-			$create_menu->setAttribute('class', 'create-menu');		
-			$li = new XMLElement('li');
-			$li->appendChild(Widget::Anchor('Make Snapshot', extension_deployer::baseURL() . 'new/snapshot/' . (is_array($this->_context) && !empty($this->_context) ? implode('/', $this->_context) . '/' : NULL), 'New Snapshot', 'button create'));
-			$create_menu->appendChild($li);
-			$this->Form->appendChild($create_menu);	
-*/			
+
+			
 		}
 
 

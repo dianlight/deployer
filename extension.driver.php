@@ -60,15 +60,16 @@
 			}
 		}
 		
-		public function export($div = NULL){
+		public function export(){
 			$sql_schema = $sql_data = NULL;
-			
+
+/*			
 			if(isset($div)){
 				$ul = new XMLElement('ul');
 				$div->appendChild($ul);
 				$ul->appendChild(new XMLElement('il', 'Database: Collecting Database Data'));
 			}
-			
+*/			
 			require_once(dirname(__FILE__) . '/lib/class.mysqldump.php');
 			
 			$dump = new MySQLDump(Symphony::Database());
@@ -76,17 +77,18 @@
 			$rows  = Symphony::Database()->fetch("SHOW TABLES LIKE '" . Administration::instance()->Configuration->get('tbl_prefix', 'database') . "_%';");		
 			$rows = array_map (create_function ('$x', 'return array_values ($x);'), $rows);
 			$tables = array_map (create_function ('$x', 'return $x[0];'), $rows);
-			$alltables = $tables;
+//			$alltables = $tables;
 			
 			
 			## Grab the schema
-			if(isset($div))$ul->appendChild(new XMLElement('il', 'Database: Grab the schema'));
+//			if(isset($div))$ul->appendChild(new XMLElement('il', 'Database: Grab the schema'));
 
 			foreach($tables as $t) $sql_schema .= $dump->export($t, MySQLDump::STRUCTURE_ONLY);
 			$sql_schema = str_replace('`' . Administration::instance()->Configuration->get('tbl_prefix', 'database'), '`tbl_', $sql_schema);
 			
-			$sql_schema = preg_replace('/AUTO_INCREMENT=\d+/i', NULL, $sql_schema);
-			
+			$sql_schema = preg_replace('/ AUTO_INCREMENT=\d+/i', NULL, $sql_schema);
+
+/*			
 			$tables = array(
 				'tbl_entries',
 				'tbl_extensions',
@@ -97,28 +99,28 @@
 				'tbl_sections',
 				'tbl_sections_association'			
 			);			
-			
+*/			
 			## Field data and entry data schemas and unknown tables needs to be apart of the workspace sql dump
-			if(isset($div))$ul->appendChild(new XMLElement('il', 'Database: Grab data and schamas for workspace'));
+//			if(isset($div))$ul->appendChild(new XMLElement('il', 'Database: Grab data and schamas for workspace'));
 			$sql_data = '';
-			foreach($alltables as $t){
+			foreach($tables as $t){
 				$t = str_replace(Administration::instance()->Configuration->get('tbl_prefix', 'database'), 'tbl_', $t);
-				if($t == "tbl_cache" || $t == "tbl_sessions" || $t == "tbl_authors" || in_array($t,$tables) )continue;
-				$sql_data .= $dump->export($t, MySQLDump::ALL);
+				if($t == "tbl_cache" || $t == "tbl_sessions" || $t == "tbl_authors")continue;
+				$sql_data .= $dump->export($t, MySQLDump::DATA_ONLY);
 			}
 			
 			## Grab the data
-			if(isset($div))$ul->appendChild(new XMLElement('il', 'Database: Grab data for workspace'));
-			foreach($tables as $t){
-				$sql_data .= $dump->export($t, MySQLDump::DATA_ONLY);
-			}
+//			if(isset($div))$ul->appendChild(new XMLElement('il', 'Database: Grab data for workspace'));
+//			foreach($tables as $t){
+//				$sql_data .= $dump->export($t, MySQLDump::DATA_ONLY);
+//			}
 			
 			$sql_data = str_replace('`' . Administration::instance()->Configuration->get('tbl_prefix', 'database'), '`tbl_', $sql_data);
 			
 			$config_string = NULL;
 			$config = Administration::instance()->Configuration->get();	
 
-			if(isset($div))$ul->appendChild(new XMLElement('il', 'Config: cleaning config'));
+//			if(isset($div))$ul->appendChild(new XMLElement('il', 'Config: cleaning config'));
 			
 			unset($config['symphony']['build']);
 			unset($config['symphony']['cookie_prefix']);
@@ -139,7 +141,7 @@
 				}
 			}
 
-			if(isset($div))$ul->appendChild(new XMLElement('il', 'Config: mark build,version and configuration'));
+//			if(isset($div))$ul->appendChild(new XMLElement('il', 'Config: mark build,version and configuration'));
 			
 			$install_template = str_replace(
 				
@@ -158,7 +160,7 @@
 									file_get_contents(dirname(__FILE__) . '/lib/installer.tpl')
 			);
 			
-			if(isset($div))$ul->appendChild(new XMLElement('il', 'ZIP: colleting files'));
+//			if(isset($div))$ul->appendChild(new XMLElement('il', 'ZIP: colleting files'));
 			$archive = new ZipArchive;
 //			$res = $archive->open(TMP . '/ensemble.tmp.zip', ZipArchive::CREATE);
 			$fileName = 'ensemble.'.gmdate('Ymd.His').'.zip';
@@ -166,14 +168,14 @@
 
 			if ($res === TRUE) {
 				
-				if(isset($div))$ul->appendChild(new XMLElement('il', 'ZIP: adding Extensions'));
+//				if(isset($div))$ul->appendChild(new XMLElement('il', 'ZIP: adding Extensions'));
 				$this->__addFolderToArchive($archive, EXTENSIONS, DOCROOT);
-				if(isset($div))$ul->appendChild(new XMLElement('il', 'ZIP: adding Symphony Engine'));
+//				if(isset($div))$ul->appendChild(new XMLElement('il', 'ZIP: adding Symphony Engine'));
 				$this->__addFolderToArchive($archive, SYMPHONY, DOCROOT);
-				if(isset($div))$ul->appendChild(new XMLElement('il', 'ZIP: adding Workspace'));
+//				if(isset($div))$ul->appendChild(new XMLElement('il', 'ZIP: adding Workspace'));
 				$this->__addFolderToArchive($archive, WORKSPACE, DOCROOT);
 				
-				if(isset($div))$ul->appendChild(new XMLElement('il', 'ZIP: colleting install scripts'));
+//				if(isset($div))$ul->appendChild(new XMLElement('il', 'ZIP: colleting install scripts'));
 				$archive->addFromString('install.php', $install_template);
 				$archive->addFromString('install.sql', $sql_schema);
 				$archive->addFromString('workspace/install.sql', $sql_data);
@@ -192,9 +194,26 @@
 				if(is_file(DOCROOT . '/update.php')) $archive->addFile(DOCROOT . '/update.php', 'update.php');
 				if(is_file(DOCROOT . '/.htaccess')) $archive->addFile(DOCROOT . '/.htaccess', 'META-INF/.htaccess');
 
+				// Save Config Template
+				$config_tpl = Administration::instance()->Configuration->get();	
+				$config_tpl['database']['character_set']='%%DBCHARSET%%';
+				$config_tpl['database']['character_encoding']='%%DBCHARENCODING%%';
+				$config_tpl['database']['runtime_character_set_alter']='%%DBRUNTIMECHARSETALTER%%';
+				$config_tpl['database']['query_caching']='%%DBCACHE%%';
+				$config_tpl['database']['host']='%%DBHOST%%';
+				$config_tpl['database']['port']='%%DBPORT%%';
+				$config_tpl['database']['user']='%%DBUSER%%';
+				$config_tpl['database']['password']='%%DBPASSWORD%%';
+				$config_tpl['database']['db']='%%DB%%';
+				$config_tpl['database']['tbl_prefix']='%%DBPREFIX%%';
+				$config_tpl['maintenance_mode']['enabled']='%%MAINTENCEMODE%%';
+				$config_tpl_obj= new Configuration();
+				$config_tpl_obj->setArray($config_tpl);
+				$archive->addFromString('META-INF/config.php',"<?php \n\$settings =".$config_tpl_obj->__toString().";\n?>");
+
 			
 				// Adding deploy.php
-				$deploy_template="<?php \n\$dpy_fileName='".$fileName."'; \n\$dpy_ensambleDate='".gmdate('d M Y H:i:s')."';\n\$dpy_deployDate='%%DEPLOY_DATE%%';\n?>";
+				$deploy_template="<?php \n\$dpy_fileName='".$fileName."'; \n\$dpy_ensambleDate='".gmdate('d M Y H:i:s')."';\n\$dpy_deployDate='%%DEPLOY_DATE%%';\n\$dpy_deployMode='%%DEPLOY_MODE%%'\n?>";
 				$archive->addFromString('META-INF/deploy.php', $deploy_template);
 			}
 			
@@ -229,7 +248,7 @@
 			$conf = array_map('trim', $context['settings']['deployer']);
 			
 			$context['settings']['deployer'] = array(
-														//  'show-hidden' => (isset($conf['show-hidden']) ? 'yes' : 'no'),
+														  'auto-maintence' => (isset($conf['auto-maintence']) ? 'yes' : 'no'),
 														  'storage-url' => (isset($conf['storage-url']) ? $conf['storage-url'] : DOCROOT . '/backup'),
 														  'deploy-url' => (isset($conf['deploy-url']) ? $conf['deply-url'] : '')
 														);
@@ -258,15 +277,15 @@
 			$label->appendChild(Widget::Input('settings[filemanager][archive-name]', General::Sanitize(Administration::instance()->Configuration->get('archive-name', 'filemanager'))));		
 			$group->appendChild($label);
 			$group->appendChild(new XMLElement('p', 'Default filename for archives generated by File Manager', array('class' => 'help')));
+*/						
 
 			$label = Widget::Label();
-			$input = Widget::Input('settings[filemanager][show-hidden]', 'yes', 'checkbox');
-			if(Administration::instance()->Configuration->get('show-hidden', 'filemanager') == 'yes') $input->setAttribute('checked', 'checked');
-			$label->setValue($input->generate() . ' Append Version/Date to archive');
+			$input = Widget::Input('settings[deployer][auto-maintence]', 'yes', 'checkbox');
+			if(Administration::instance()->Configuration->get('auto-maintence', 'deployer') == 'yes') $input->setAttribute('checked', 'checked');
+			$label->setValue($input->generate() . ' Automatc Maintence mode on deploy');
 			$group->appendChild($label);
 
-			$group->appendChild(new XMLElement('p', 'Hidden files will not be included in archives unless this is checked.', array('class' => 'help')));
-*/						
+			$group->appendChild(new XMLElement('p', 'Puts the production site in "Maintence Mode" automatically during the deployment operation.', array('class' => 'help')));
 			$context['wrapper']->appendChild($group);
 						
 		}
@@ -386,8 +405,9 @@
 				$deploy_log->writeToLog("INFO: Extracting done.", true);
 				// Execute SQL
 				if(file_exists($this->getDeployUrl().'/manifest/config.php')){
-					$deploy_log->writeToLog("INFO: Found installed environment! Connecting to DB", true);
-					require_once($this->getDeployUrl().'/manifest/config.php');
+					require($this->getDeployUrl().'/manifest/config.php');
+					$deploy_log->writeToLog("INFO: Found installed environment! ", true);
+					$deploy_log->writeToLog("INFO: Connecting to DB".var_export($settings['database'],true), true);
 //					$dpy_status = ($settings['maintenance_mode']['enabled'] == 'no')?'Production':'Maintence';
 					$mysql = new MySQL();
 					$mysql->connect($settings['database']['host'],
@@ -399,15 +419,36 @@
 					$mysql->select($settings['database']['db']);
 					$mysql->setPrefix($settings['database']['tbl_prefix']);
 							
+					// Check if SOFT DEPLOY IS POSSIBLE
+					require_once(dirname(__FILE__) . '/lib/class.mysqldump.php');			
+					$dump = new MySQLDump($mysql);
 					
-					$deploy_log->writeToLog("INFO: Starting DESTRUCTIVE deploy", true);
+					$deploy_log->writeToLog("INFO: Starting DB Sync", true);
 					// Usare firesql to manage errors
+					$deployType='SOFT';
 					$deploy_log->writeToLog("INFO: Recreate db schema..START", true);
 					$handle = fopen($this->getDeployUrl().'/install.sql', "r");
 					while (($sql = fgets($handle, 4096)) !== false) {
-						 $query.=$sql."\r\n";
+						 $query.=$sql;
 						 if(trim($sql) == '' && trim($query) != ''){
-						 	 $mysql->import($query);
+							if(preg_match('/.*TABLE `(.*)`.*/', $query,$matches) != 0){
+								$deploy_log->writeToLog("INFO: Table name:'".$matches[1]."'", true);
+								$sql_schema = $dump->export($matches[1], MySQLDump::STRUCTURE_ONLY);
+								$sql_schema = str_replace('`' . $settings['database']['tbl_prefix'], '`tbl_', $sql_schema);
+								$sql_schema = preg_replace('/ AUTO_INCREMENT=\d+/i', NULL, $sql_schema);
+							};
+							if(strcmp(trim($sql_schema),trim($query)) != 0){
+								$deploy_log->writeToLog("INFO: FI:'".trim($query)."'", true);
+								$deploy_log->writeToLog("INFO: DB:'".trim($sql_schema)."'", true);
+								$deploy_log->writeToLog("INFO: FI:'".md5(trim($query))."' DB:'".md5(trim($sql_schema))."'", true);
+								if($deployType=='SOFT'){
+									$deployType='HARD';
+									$deploy_log->writeToLog("INFO: Switch to HARD Deploy Mode....", true);
+								}
+								$mysql->import($query);
+							} else {
+								$deploy_log->writeToLog("INFO: No update schema needed for table ".$matches[1], true);
+							}
 						 	 $query='';
 						 }
 					}        
@@ -416,20 +457,41 @@
 					
 					
 					$query='';
-					$deploy_log->writeToLog("INFO: Importing workspace data..START", true);
+					$deploy_log->writeToLog("INFO: Importing workspace data..(".$deployType." mode )START", true);
 					$handle = fopen($this->getDeployUrl().'/workspace/install.sql', "r");
 					while (($sql = fgets($handle, 4096)) !== false) {
-						 $query.=$sql."\r\n";
+						 $query.=$sql;
 						 if(trim($sql) == '' && trim($query) != ''){
+						 	 $query = preg_replace('/INSERT/i', 'REPLACE', $query);
 						 	 $mysql->import($query);
 						 	 $query='';
 						 }
 					}        
 					fclose($handle);
 					$deploy_log->writeToLog("INFO: Importing workspace data..END", true);
+				// Merge Config
+					$deploy_log->writeToLog("INFO: Merging Config...", true);
+					$handle = fopen($this->getDeployUrl()."/META-INF/config.php", "rb");
+					$content = fread($handle,filesize($this->getDeployUrl()."/META-INF/config.php"));
+					fclose($handle);
+					$content = str_replace("%%DBCHARSET%%", $settings['database']['character_set'], $content);
+					$content = str_replace("%%DBCHARENCODING%%", $settings['database']['character_encoding'], $content);
+					$content = str_replace("%%DBRUNTIMECHARSETALTER%%", $settings['database']['runtime_character_set_alter'], $content);
+					$content = str_replace("%%DBCACHE%%", $settings['database']['query_caching'], $content);
+					$content = str_replace("%%DBHOST%%", $settings['database']['host'], $content);
+					$content = str_replace("%%DBPORT%%", $settings['database']['port'], $content);
+					$content = str_replace("%%DBUSER%%", $settings['database']['user'], $content);
+					$content = str_replace("%%DBPASSWORD%%", $settings['database']['password'], $content);
+					$content = str_replace("%%DB%%",$settings['database']['db'],$content);
+					$content = str_replace("%%DBPREFIX%%", $settings['database']['tbl_prefix'], $content);
+					$content = str_replace("%%MAINTENCEMODE%%", $settings['maintenance_mode']['enabled'], $content);
+					$handle = fopen($this->getDeployUrl()."/manifest/config.php", "wb");
+					$numbytes = fwrite($handle, $content);
+					fclose($handle);
+					
 					// Move .htaccess
 					$deploy_log->writeToLog("INFO: Moving .htaccess to root. Result (1=OK): ".
-						rename($this->getDeployUrl()."/META-INF/.htaccess",$this->getDeployUrl()."/.htaccess"), true);
+						rename($this->getDeployUrl()."/META-INF/.htaccess",$this->getDeployUrl()."/.htaccess"), true);					
 					
 				}
 				// Mark Deploy Date
@@ -439,8 +501,11 @@
 				fclose($handle);
 				$handle = fopen($this->getDeployUrl()."/META-INF/deploy.php", "wb");
 				$content = str_replace("%%DEPLOY_DATE%%", gmdate('d M Y H:i:s'), $content);
+				$content = str_replace("%%DEPLOY_MODE%%", $deployType, $content);
 				$numbytes = fwrite($handle, $content);
 				fclose($handle);
+				
+				
 				
 			} else {
 				$this->_Parent->customError(E_USER_ERROR, 'Deploy Failed', 'The file you requested, <code>'.$file.'</code>, can\'t be extract to deploy location.', false, true, 'error', array('header' => 'HTTP/1.0 404 Not Found'));
@@ -448,7 +513,7 @@
 			$deploy_log->writeToLog("============================================", true);
 			$deploy_log->writeToLog("DEPLOY COMPLETED: Execution Time - ".max(1, time() - $start)." sec (" . date("d.m.y H:i:s") . ")", true);
 			$deploy_log->writeToLog("============================================", true);
-			redirect(extension_deployer::baseURL() . 'deployer/');
+			
 		}
 		
 		
@@ -468,6 +533,22 @@
 
 			return 'application/octet-stream';
 	
+		}
+		
+		
+		
+		public function productionMaintence($status){
+				if(file_exists($this->getDeployUrl().'/manifest/config.php')){
+					require($this->getDeployUrl().'/manifest/config.php');
+					$oldStatus = $settings['maintenance_mode']['enabled'];
+					$settings['maintenance_mode']['enabled']=$status?'yes':'no';
+					$config_tpl_obj= new Configuration();
+					$config_tpl_obj->setArray($settings);
+					$handle = fopen($this->getDeployUrl()."/manifest/config.php", "wb");
+					$numbytes = fwrite($handle,"<?php \n\$settings =".$config_tpl_obj->__toString().";\n?>");
+					fclose($handle);
+					return $oldStatus;
+				}
 		}
 		
 	}
