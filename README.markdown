@@ -1,16 +1,13 @@
 # Deployer #
 
-** ATTENTION ** 
-This is a early alpha version and is not tested in all condition and environments. 
-Use with CAUTION only as Technology Preview not on production environment. 
-** ATTENTION ** 
+**ATTENTION** This is a beta version! Use with CAUTION not on production environment. **ATTENTION** 
 
 This externsion allow to manage two environment at time.
 One environment is the stage and is a "standard" Symphony.CMS installation where authors can develop the website.
 The other environment is the production where a snopshot of the stage enviroment live without in a "readonly" mode.
 
-- Version: 0.03
-- Date: 15th Dec 2010
+- Version: 0.4
+- Date: 16th Dec 2010
 - Requirements: Symphony 2.1.0 or above, ZIP enabled (--enable-zip)
 - Author: Lucio Tarantino, lucio.tarantino@gmail.com
 - Constributors: [A list of contributors can be found in the commit history]
@@ -48,13 +45,12 @@ Information about [installing and updating extensions](http://symphony-cms.com/l
 
 ## Change Log
 
-**Version 0.4** ( RoadMap Alpha4 )
-TODO:
-- Add aumatic maintenance_mode on deploy only if needed (Hard Deploy?)
-- Add option to include/exclude .htaccess on deploy.
+**Version 0.4** ( 16th Dec 2010 Beta )
+- Respect Backend language
+- Add aumatic maintenance_mode on deploy only if needed (on Hard Deploy)
 - Add option to include authors.
-- Timestamp on log link
-- Deploy log cleaner
+- Add option to create a only Admin on deploy.
+- Bug fixing
 
 
 **Version 0.3** ( 15th Dec 2010 Alpha3 )
@@ -82,5 +78,8 @@ TODO:
 - Add User Comments on SnapShoots
 - Add Site Recovery on a failed Deploy.
 - UI Improvement ( Progress Bars?)
-- Add option to create a new Admin on deploy.
 - Write a Manual
+- Languages traductons
+- Add option to include/exclude .htaccess on deploy.
+- Timestamp on log link
+- Deploy log cleaner

@@ -67,35 +67,35 @@
 				$create_menu->setAttribute('class', 'create-menu');
 			
 				$li = new XMLElement('li');
-				$li->appendChild(Widget::Anchor('Make Snapshot', extension_deployer::baseURL() . 'new/snapshot/' . (is_array($this->_context) && !empty($this->_context) ? implode('/', $this->_context) . '/' : NULL), 'New Snapshot', 'button create'));
+				$li->appendChild(Widget::Anchor(__('Make Snapshot'), extension_deployer::baseURL() . 'new/snapshot/' . (is_array($this->_context) && !empty($this->_context) ? implode('/', $this->_context) . '/' : NULL), 'New Snapshot', 'button create'));
 				$create_menu->appendChild($li);
 			
 //				$li = new XMLElement('li');
-//				$li->appendChild(Widget::Anchor('Snapshot and Deploy', extension_deployer::baseURL() . 'new/file/' . (is_array($this->_context) && !empty($this->_context) ? implode('/', $this->_context) . '/' : NULL), 'New File', 'button create'));
+//				$li->appendChild(Widget::Anchor(__('Snapshot and Deploy'), extension_deployer::baseURL() . 'new/file/' . (is_array($this->_context) && !empty($this->_context) ? implode('/', $this->_context) . '/' : NULL), 'New File', 'button create'));
 //				$create_menu->appendChild($li);
 			
 //				$li = new XMLElement('li');
 //				$li->appendChild(Widget::Anchor('Upload File', extension_filemanager::baseURL() . 'new/upload/' . (is_array($this->_context) && !empty($this->_context) ? implode('/', $this->_context) . '/' : NULL), 'Upload File', 'button create'));
 //				$create_menu->appendChild($li);
 			} else if(file_exists($path)) {
-				$create_menu = new XMLElement('p','This directory is not writable');
+				$create_menu = new XMLElement('p',__('This directory is not writable'));
 				$create_menu->setAttribute('class','create-menu');
 			} else {
-				$create_menu = new XMLElement('p','This directory not exists');
+				$create_menu = new XMLElement('p',__('This directory not exists'));
 				$create_menu->setAttribute('class','create-menu');
 			}
 
 			$this->setPageType('table');
-			$this->appendSubheading("Storage path: ".$Deployer->getStorageUrl());
+			$this->appendSubheading(__("Storage").' '.__('path').": ".$Deployer->getStorageUrl());
 			$this->Form->appendChild($create_menu);
 
 			$aTableHead = array(
 
-				array('Name', 'col'),
-				array('Size', 'col'),
-				array('Date', 'col'),
-				array('Available Actions', 'col'),
-				array('', 'col'),			
+				array(__('Name'), 'col'),
+				array(__('Size'), 'col'),
+				array(__('Date'), 'col'),
+				array(__('Available Actions'), 'col'),
+//				array('', 'col'),			
 
 			);	
 
@@ -131,16 +131,16 @@
 			$tableActions->setAttribute('class', 'actions');
 
 			$options = array(
-				array(NULL, false, 'With Selected...'),
+				array(NULL, false, __('With Selected...')),
 //				array('deploy', false, 'Deploy'),
-				array('delete', false, 'Delete')									
+				array('delete', false, __('Delete'))									
 			);
 
 			$tableActions->appendChild(Widget::Select('with-selected', $options));
-			$tableActions->appendChild(Widget::Input('action[apply]', 'Apply', 'submit'));
+			$tableActions->appendChild(Widget::Input('action[apply]', __('Apply'), 'submit'));
 			$this->Form->appendChild($tableActions);
 
-			$this->appendSubheading("Production path: ".$Deployer->getDeployUrl());
+			$this->appendSubheading(__("Production").' '.__('path').": ".$Deployer->getDeployUrl());
 			
 			$div = new XMLElement('div');
 			$div->setAttribute('class', 'group');
@@ -150,7 +150,7 @@
 				$dpy_status = '-';
 			} else {
 				require_once($Deployer->getDeployUrl().'/manifest/config.php');
-				$dpy_status = ($settings['maintenance_mode']['enabled'] == 'no')?'Production':'Maintence';
+				$dpy_status = ($settings['maintenance_mode']['enabled'] == 'no')?__('Production'):__('Maintence');
 			}
 			if(!file_exists($Deployer->getDeployUrl().'/META-INF/deploy.php')){
 				$dpy_fileName='-';
@@ -163,31 +163,31 @@
 			$create_menu = new XMLElement('ul');
 			$create_menu->setAttribute('class', 'create-menu');		
 			$li = new XMLElement('li');
-			if($settings['maintenance_mode']['enabled'] == 'no')$li->appendChild(Widget::Anchor('Turn productionin Maintence Mode', extension_deployer::baseURL() . 'command?cmd=goOffline', 'Turn productionin Maintence Mode', 'button'));
-			else if($settings['maintenance_mode']['enabled'] == 'yes')$li->appendChild(Widget::Anchor('Remove Maintence Mode', extension_deployer::baseURL() . 'command?cmd=goOnline' , 'Remove Maintence Mode', 'button'));
+			if($settings['maintenance_mode']['enabled'] == 'no')$li->appendChild(Widget::Anchor(__('Turn productionin Maintence Mode'), extension_deployer::baseURL() . 'command?cmd=goOffline', __('Turn productionin Maintence Mode'), 'button'));
+			else if($settings['maintenance_mode']['enabled'] == 'yes')$li->appendChild(Widget::Anchor(__('Remove Maintence Mode'), extension_deployer::baseURL() . 'command?cmd=goOnline' , __('Remove Maintence Mode'), 'button'));
 			$create_menu->appendChild($li);
 			$this->Form->appendChild($create_menu);	
 
 			
-			$prodstatus->appendChild(new XMLElement('p','Status:',array('class' => 'status-label')));
+			$prodstatus->appendChild(new XMLElement('p',__('Status').':',array('class' => 'status-label')));
 			$prodstatus->appendChild(new XMLElement('p',$dpy_status,array('class' => 'status-text')));
 			$prodstatus->appendChild(new XMLElement('br'));
 				
-			$prodstatus->appendChild(new XMLElement('p','Deployed Zip:',array('class' => 'status-label')));
+			$prodstatus->appendChild(new XMLElement('p',__('Deployed Zip').':',array('class' => 'status-label')));
 			$prodstatus->appendChild(new XMLElement('p',$dpy_fileName,array('class' => 'status-text')));
 			$prodstatus->appendChild(new XMLElement('br'));
 
-			$prodstatus->appendChild(new XMLElement('p','Ensamble Date:',array('class' => 'status-label')));
+			$prodstatus->appendChild(new XMLElement('p',__('Ensamble Date').':',array('class' => 'status-label')));
 			$prodstatus->appendChild(new XMLElement('p',$dpy_ensambleDate,array('class' => 'status-text')));
 			$prodstatus->appendChild(new XMLElement('br'));
 
-			$prodstatus->appendChild(new XMLElement('p','Deploy Mode:',array('class' => 'status-label')));
+			$prodstatus->appendChild(new XMLElement('p',__('Deploy Mode').':',array('class' => 'status-label')));
 			$prodstatus->appendChild(new XMLElement('p',$dpy_deployMode,array('class' => 'status-text')));
 			$prodstatus->appendChild(new XMLElement('br'));
 			
-			$prodstatus->appendChild(new XMLElement('p','Deployed Date:',array('class' => 'status-label')));
+			$prodstatus->appendChild(new XMLElement('p',__('Deployed Date').':',array('class' => 'status-label')));
 			$prodstatus->appendChild(new XMLElement('p',$dpy_deployDate,array('class' => 'status-text')));
-			$prodstatus->appendChild(Widget::Anchor('(show log)', '/deploy-log.txt', 'Display Log of deploy', 'status-text'));
+			$prodstatus->appendChild(Widget::Anchor('('.__('show').' '.__('log').')', '/deploy-log.txt', __('Display Log of deploy'), 'status-text'));
 			$prodstatus->appendChild(new XMLElement('br'));
 			
 			
@@ -215,8 +215,8 @@
 				$download_uri = $Deployer->baseURL() . 'properties/?file=' . urlencode($relpath) . '/';
 			}
 			if(!$file->isDot()){
-//				$td1 = Widget::TableData(Widget::Anchor($file->getFilename(), $Deployer->baseURL() . ($file->isDir() ? 'browse' . $relpath . '/' : 'properties/?file=' . urlencode($relpath)), NULL, 'file-type ' . ($file->isDir() ? 'folder' : File::fileType($file->getFilename()))));
-				$td1 = Widget::TableData($file->getFilename());
+				$td1 = Widget::TableData(Widget::Anchor($file->getFilename(),$download_uri));
+//				$td1 = Widget::TableData($file->getFilename());
 	
 //				$group = $file->getGroup();
 //				$owner = $file->getOwner();
@@ -227,19 +227,25 @@
 				
 				$td3 = Widget::TableData(DateTimeObj::get(__SYM_DATETIME_FORMAT__, $file->getMTime()));
 				
+				$actions_list = new XMLElement('p');
 				if($file->isWritable()) {
 					if($file->isDir()){
-						$td4 = Widget::TableData(Widget::Anchor('Edit', $download_uri));
-						$td5 = Widget::TableData('-', 'inactive');	
+						$actions_list->appendChild(Widget::Anchor(__('Edit'), $download_uri));
+//						$td4 = Widget::TableData(Widget::Anchor(__('Edit'), $download_uri));
+//						$td5 = Widget::TableData('-', 'inactive');	
 					} else {
-						$td4 = Widget::TableData(Widget::Anchor('Download', $download_uri));
-						$td5 = Widget::TableData(Widget::Anchor('Deploy', $deploy_uri));	
+	//					$actions_list->appendChild(Widget::Anchor(__('Download'), $download_uri));
+	//					$actions_list->appendChild(new XMLElement('br'));
+						$actions_list->appendChild(Widget::Anchor(__('Deploy'), $deploy_uri));
+					
+//						$td4 = Widget::TableData(Widget::Anchor(__('Download'), $download_uri));
+//						$td5 = Widget::TableData(Widget::Anchor(__('Deploy'), $deploy_uri));	
 					}	
-				}	
-				else {
-					$td4 = Widget::TableData('-', 'inactive');	
-					$td5 = Widget::TableData('-', 'inactive');	
+//				} else {
+//					$td4 = Widget::TableData('-', 'inactive');	
+//					$td5 = Widget::TableData('-', 'inactive');	
 				}
+				$td4=Widget::TableData($actions_list);
 			}
 			
 			else{
@@ -253,9 +259,12 @@
 			
 		//	$startlocation = DOCROOT . $this->getStartLocation();
 			
-			if(!$file->isDot()) $td5->appendChild(Widget::Input('items['.str_replace($startlocation, '', $file->getPathname()) . ($file->isDir() ? '/' : NULL).']', NULL, 'checkbox'));
+//			if(!$file->isDot())
+			$td4->appendChild(Widget::Input('items['.str_replace($startlocation, '', $file->getPathname()) . ($file->isDir() ? '/' : NULL).']', NULL, 'checkbox'));
 			
-			return Widget::TableRow(array($td1, $td2 , $td3, $td4, $td5));
+			return Widget::TableRow(array($td1, $td2 , $td3, $td4
+				//, $td5
+				));
 						
 		}
 
